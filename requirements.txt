@@ -1,0 +1,9 @@
+pydantic
+pyyaml
+requests
+bentoml
+tqdm
+openai
+numpy
+Pillow
+aesthetic_predictor_v2_5

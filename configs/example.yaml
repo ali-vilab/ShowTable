@@ -1,0 +1,107 @@
+# 任务与并发
+run:
+  mode: eval  # 任务模式
+  parallel_mode: "thread"
+  max_workers: 80  # 并发数量
+
+# 数据与输出
+data:
+  prompts_file: "data/eval_data.jsonl"     # 每行一个 origin prompt；或留空用 inline_prompts
+  gt_image_root: "data/gt_images"
+  inline_prompts: []              # 直接在配置里给list
+  out_dir: "work_dirs/eval_outputs"              # 输出目录
+  exist_strategy: "skip"          # skip | overwrite
+  records_file: "records.jsonl"
+  success_records_file: "visual_success_records.jsonl"
+
+# 重写
+rewrite:
+  enable: true                    # 是否开启rewrite
+  text_prompt_template: "A clean infographic about {topic}, showing data: {table}, chart style, professional design, high quality, 4k"
+  use_prompt_directly: false
+  provider: "server"              # api | server | transformers
+  max_new_tokens: 4096
+  api:
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+  server:
+    - model: "qwen3"
+      api_base: "http://10.32.12.207:23333/v1"
+      api_key: "EMPTY"
+      timeout: 1800
+      temperature: 0.0
+
+# 文生图
+image_gen:
+  provider: "qwen_image_server"
+  qwen_image_server:
+    - api_base: "http://10.32.12.117:3000"
+  wan_pools:
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+      model: "wan2.5-t2i-preview"
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+      model: "wan2.5-t2i-preview"
+
+# 评审
+judge:
+  provider: "api"              # api | server | transformers
+  rounds: 3                       # judge+edit 轮数
+  use_history: false
+  api:
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+  server:
+    - model: "Qwen3-VL-235B-A22B-Instruct"
+      api_base: "http://10.32.12.118:23333/v1"  # VLM裁判HTTP接口
+      api_key: "EMPTY"
+      timeout: 60
+      temperature: 0.0
+
+# 编辑
+edit:
+  provider: "wan"
+  qwen_image_server:
+    - api_base: "http://10.32.3.124:4000"
+  gpt_pools:
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+      model: "gpt-image-1"
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+      model: "gpt-image-1"
+  wan_pools:
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+      model: "wan2.5-i2i-preview"
+    - api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+      model: "wan2.5-i2i-preview"
+
+# 评测
+eval:
+  enable: true
+  role: "latest"
+  provider: "api"
+  records_file: "eval_records.jsonl"
+  metric_file: "eval_metric.jsonl"
+  api:
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_1"
+    - model: "gemini-2.5-pro"
+      api_base: "YOUR_API_URL"
+      api_key: "YOUR_API_KEY_2"
+
+# 日志
+logging:
+  level: "INFO"
