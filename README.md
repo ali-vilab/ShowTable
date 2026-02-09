@@ -1,5 +1,7 @@
 # ShowTable
 
+<font size=3><div align='center' > [[🍎 Project Page](https://lntzm.github.io/showtable-page/)] [[📖 ArXiv Paper](https://arxiv.org/abs/2512.13303)] [[🤗 HF Dataset](https://huggingface.co/datasets/lntzm/TableVisBench)]  </div></font>
+
 **ShowTable** is a novel pipeline that synergizes Multimodal Large Language Models (MLLMs) with diffusion models via a progressive self-correcting process for **Creative Table Visualization**. This task challenges models to generate infographics that are both aesthetically pleasing and faithful to the data points in a given table.
 
 This repository contains the official **inference** and **evaluation** implementation of the paper:
